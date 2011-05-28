@@ -1,0 +1,60 @@
+A unit testing system for MCollective Agents that can
+run agents without the need for a running mcollectived
+or middleware.
+
+Given the agent below:
+
+<pre>
+module MCollective
+  module Agent
+    class Echo<RPC::Agent
+      action "echo" do
+        validate :msg, String
+
+        reply[:msg] = request[:msg]
+        reply[:time] = Time.now.to_s
+      end
+    end
+  end
+end
+</pre>
+
+You can easily test it using the test case below:
+
+<pre>
+describe "rpcutil agent" do
+  before do
+    # Load the 'echo' agent from the libdir provided
+    @agent = LocalAgentTest.new("echo", :config => {:libdir => "/usr/libexec/mcollective"})
+  end
+
+  describe "#echo" do
+    it "should only allow strings to be used" do
+      result = @agent.call(:echo, {:msg => 1})
+
+      # Many matchers exist for the response status like
+      # be_successful, be_invalid_data_error etc
+      result.should be_unknown_error
+    end
+
+    it "should send back a correct echo action" do
+      # The agent does Time.now which we cannot
+      # really test for, mock it so it returns known data
+      Time.expects(:now).returns(0)
+
+      result = @agent.call(:echo, {:msg => "hello world"})
+      result.should be_successful
+
+      # makes sure all the result data is there
+      result.have_data_items(:msg, :time)
+
+      # check the result for validity
+      result[:data][:msg].should == "hello world"
+      result[:data][:time].should == 0
+      end
+  end
+end
+</pre>
+
+A more complete example for the rpcutil agent can be found in the
+spec directory
