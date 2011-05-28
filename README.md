@@ -46,7 +46,7 @@ describe "rpcutil agent" do
       result.should be_successful
 
       # makes sure all the result data is there
-      result.have_data_items(:msg, :time)
+      result.should have_data_items(:msg, :time)
 
       # check the result for validity
       result[:data][:msg].should == "hello world"
