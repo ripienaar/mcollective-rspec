@@ -17,9 +17,6 @@ class LocalAgentTest
         create_facts_mock(facts)
     end
 
-    def run_action(agent, action, args)
-    end
-
     def call(action, args={})
         request = {:action => action.to_s,
                    :agent => agent,
