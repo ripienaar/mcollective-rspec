@@ -58,3 +58,31 @@ end
 
 A more complete example for the rpcutil agent can be found in the
 spec directory
+
+Running the rpcutil test results in the following output:
+
+<pre>
+rpcutil agent
+  #meta
+    should have valid metadata
+  #agent_inventory
+    should correctly report the agent inventory
+  #inventory
+    should return the correct inventory
+  #get_fact
+    should fail for non string fact names
+    should look up a single fact
+  #get_config_item
+    should validate that a string was passed
+    should fail for unknown config items
+    should return valid config data
+  #collective_info
+    should report correct collective data
+  #ping
+    should return the correct local time
+  #daemon_stats
+    should return correct stats
+
+Finished in 0.09804 seconds
+11 examples, 0 failures
+</pre>
