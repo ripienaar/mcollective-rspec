@@ -7,7 +7,7 @@ Given the agent below:
 <pre>
 module MCollective
   module Agent
-    class Echo<RPC::Agent
+    class Echo&lt;RPC::Agent
       action "echo" do
         validate :msg, String
 
