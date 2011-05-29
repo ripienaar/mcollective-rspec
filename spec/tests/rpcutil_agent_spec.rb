@@ -4,7 +4,7 @@ require File.join([File.dirname(__FILE__), '/../spec_helper'])
 
 describe "rpcutil agent" do
     before do
-        @agent = LocalAgentTest.new("rpcutil", :config => {:libdir => "/usr/libexec/mcollective"})
+        @agent = MCTest::LocalAgentTest.new("rpcutil", :config => {:libdir => "/usr/libexec/mcollective"})
     end
 
     describe "#meta" do

@@ -7,14 +7,11 @@ require 'rspec/mocks'
 require 'mocha'
 require 'tempfile'
 
-require 'mc_test_helper.rb'
-require 'local_agent_test.rb'
-require 'matchers.rb'
-
+require 'mctest'
 
 RSpec.configure do |config|
     config.mock_with :mocha
-    config.include(Matchers)
+    config.include(MCTest::Matchers)
 
     config.before :each do
         MCollective::PluginManager.clear

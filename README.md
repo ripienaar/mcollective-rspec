@@ -25,7 +25,7 @@ You can easily test it using the test case below:
 describe "rpcutil agent" do
   before do
     # Load the 'echo' agent from the libdir provided
-    @agent = LocalAgentTest.new("echo", :config => {:libdir => "/usr/libexec/mcollective"})
+    @agent = MCTest::LocalAgentTest.new("echo", :config => {:libdir => "/usr/libexec/mcollective"})
   end
 
   describe "#echo" do
