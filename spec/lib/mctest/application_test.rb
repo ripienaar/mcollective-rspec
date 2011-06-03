@@ -19,5 +19,13 @@ module MCTest
             @plugin.stubs(:printf)
             @plugin.stubs(:printrpcstats)
         end
+
+        def self.create_response(senderid, value = 1, fail = false)
+            unless fail
+                {:senderid => senderid, :body => {:data => {:value => value}}}
+            else
+                {:senderid => senderid, :body => nil}
+            end
+        end
     end
 end

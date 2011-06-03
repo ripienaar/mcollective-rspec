@@ -52,8 +52,10 @@ module MCollective
 
         describe "#main" do
             it "should handle failure responses correctly" do
-                resp1 = {:senderid => "node1", :body => {:data => {:value => "1"}}}
-                resp2 = {:senderid => "node2", :body => nil}
+                #resp1 = {:senderid => "node1", :body => {:data => {:value => "1"}}}
+                #resp2 = {:senderid => "node2", :body => nil}
+                resp1 = @util.create_response("node1", "1")
+                resp2 = @util.create_response("node2", "99", true)
 
                 STDERR.expects(:puts).with("Could not parse facts for node2: NoMethodError: undefined method `[]' for nil:NilClass")
 
