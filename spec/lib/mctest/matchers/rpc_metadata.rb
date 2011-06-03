@@ -1,9 +1,11 @@
 module MCTest
     module Matchers
-        def be_valid_metadata; RPCMetadata.new; end
+        def have_valid_metadata; RPCMetadata.new; end
 
         class RPCMetadata
             def matches?(actual)
+                actual = actual.meta
+
                 @msg = "Unknown error"
 
                 [:name, :description, :author, :license, :version, :url, :timeout].each do |item|

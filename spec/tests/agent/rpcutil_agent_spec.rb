@@ -4,12 +4,12 @@ require File.join([File.dirname(__FILE__), '/../../spec_helper'])
 
 describe "rpcutil agent" do
     before do
-        @agent = MCTest::LocalAgentTest.new("rpcutil", :config => {:libdir => "/usr/libexec/mcollective"})
+        @agent = MCTest::LocalAgentTest.new("rpcutil", :config => {:libdir => "/usr/libexec/mcollective"}).plugin
     end
 
     describe "#meta" do
         it "should have valid metadata" do
-            @agent.plugin.meta.should be_valid_metadata
+            @agent.should have_valid_metadata
         end
     end
 
@@ -106,7 +106,6 @@ describe "rpcutil agent" do
 
             result = @agent.call(:daemon_stats)
             result.should be_successful
-            result.should have_data_items(:configfile, :times, :threads, :pid, :agents, :version)
 
             result[:data].should == {:configfile=>"server.cfg",
                                      :times=>:times,

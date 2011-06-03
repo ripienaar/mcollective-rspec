@@ -4,24 +4,24 @@ require File.join([File.dirname(__FILE__), '/../../spec_helper'])
 
 describe "puppetd agent" do
     before do
-        @agent = MCTest::LocalAgentTest.new("puppetd", :config => {:libdir => "/usr/libexec/mcollective"})
-        @agent.plugin.instance_variable_set("@lockfile", "spec_test_lock_file")
+        @agent = MCTest::LocalAgentTest.new("puppetd", :config => {:libdir => "/usr/libexec/mcollective"}).plugin
+        @agent.instance_variable_set("@lockfile", "spec_test_lock_file")
     end
 
     describe "#meta" do
         it "should have valid metadata" do
-            @agent.plugin.meta.should be_valid_metadata
+            @agent.should have_valid_metadata
         end
     end
 
     describe "#last_run_summary" do
         it "should return the last run summary" do
-            @agent.plugin.instance_variable_set("@last_summary", "spec_test_last_summary")
+            @agent.instance_variable_set("@last_summary", "spec_test_last_summary")
             YAML.expects(:load_file).with("spec_test_last_summary").returns({"time" => nil, "events" => nil, "changes" => nil, "resources" => {"failed" => 0,"changed" => 0, "total" => 0, "restarted" => 0, "out_of_sync" => 0}})
 
             result = @agent.call(:last_run_summary)
             result.should be_successful
-
+            result.should have_data_items(:changes, :events, :resources, :time)
         end
     end
 
@@ -110,10 +110,10 @@ describe "puppetd agent" do
         end
 
         it "runs puppet if it is not already running, with splaytime if request[:forcerun] is true" do
-            @agent.plugin.instance_variable_set("@puppetd", "spec_test_puppetd")
-            @agent.plugin.instance_variable_set("@splaytime", 1)
+            @agent.instance_variable_set("@puppetd", "spec_test_puppetd")
+            @agent.instance_variable_set("@splaytime", 1)
 
-            @agent.plugin.expects(:run).with("spec_test_puppetd --onetime --splaylimit 1 --splay", :stdout => :output, :chomp => true)
+            @agent.expects(:run).with("spec_test_puppetd --onetime --splaylimit 1 --splay", :stdout => :output, :chomp => true)
 
             result = @agent.call(:runonce)
             result.should be_successful
@@ -121,9 +121,9 @@ describe "puppetd agent" do
         end
 
         it "runs puppet if it is not already running, without splaytime if require[:forcerun] is false" do
-            @agent.plugin.instance_variable_set("@puppetd", "spec_test_puppetd")
+            @agent.instance_variable_set("@puppetd", "spec_test_puppetd")
 
-            @agent.plugin.expects(:run).with("spec_test_puppetd --onetime", :stdout => :output, :chomp => true)
+            @agent.expects(:run).with("spec_test_puppetd --onetime", :stdout => :output, :chomp => true)
 
             result = @agent.call(:runonce, :forcerun => true)
             result.should be_successful
@@ -140,7 +140,9 @@ describe "puppetd agent" do
             File::Stat.expects(:new).with("spec_test_lock_file").returns(stat)
 
             result = @agent.call(:status)
+
             result[:data][:output].should == "Disabled, not running"
+            result.should have_data_items(:running, :enabled, :lastrun, :output)
 
         end
 
@@ -151,15 +153,18 @@ describe "puppetd agent" do
             File::Stat.expects(:new).with("spec_test_lock_file").returns(stat)
 
             result = @agent.call(:status)
-            result[:data][:output].should == "Enabled, running"
 
+            result[:data][:output].should == "Enabled, running"
+            result.should have_data_items(:running, :enabled, :lastrun, :output)
         end
 
         it "is enabled and not running if the lockfile does not exist" do
             File.expects(:exists?).with("spec_test_lock_file").returns(false)
 
             result = @agent.call(:status)
+
             result[:data][:output].should == "Enabled, not running"
+            result.should have_data_items(:running, :enabled, :lastrun, :output)
         end
 
     end
