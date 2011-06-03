@@ -11,7 +11,7 @@ module MCollective
 
         describe "#application_description" do
             it "should have a description set" do
-                @app.application_description.should_not == nil
+                @app.should have_a_description
             end
         end
 
