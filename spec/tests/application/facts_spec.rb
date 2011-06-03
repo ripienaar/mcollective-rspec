@@ -70,16 +70,14 @@ module MCollective
             end
 
             it "should parse responses correctly" do
-                resp1 = @util.create_response("node1", :value => "1")
-                resp2 = @util.create_response("node2", :value => "2")
-
                 @app.expects(:configuration).returns({:fact => "test"}).twice
                 @app.expects(:options).returns({})
 
-                rpcutil = mock
-                rpcutil.expects(:progress=).once
-                rpcutil.expects(:get_fact).with(:fact => "test").multiple_yields([resp1], [resp2])
-                @app.expects(:rpcclient).with("rpcutil").returns(rpcutil)
+                rpcutil = @app.create_client("rpcutil") do |client|
+                    resp1 = @util.create_response("node1", :value => "1")
+                    resp2 = @util.create_response("node2", :value => "2")
+                    client.expects(:get_fact).with(:fact => "test").multiple_yields([resp1], [resp2])
+                end
 
                 @app.expects(:show_single_fact_report).with("test", {"1" => ["node1"], "2" => ["node2"]}, nil)
                 @app.expects(:printrpcstats).once
