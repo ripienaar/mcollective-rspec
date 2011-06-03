@@ -1,6 +1,6 @@
 #! /usr/bin/env ruby
 
-require File.join([File.dirname(__FILE__), '/../spec_helper'])
+require File.join([File.dirname(__FILE__), '/../../spec_helper'])
 
 describe "puppetd agent" do
     before do
@@ -51,7 +51,7 @@ describe "puppetd agent" do
 
             File.expects(:exists?).with("spec_test_lock_file").returns(true)
             File::Stat.expects(:new).with("spec_test_lock_file").returns(stat)
-            
+
             result = @agent.call(:enable)
             result[:data][:output].should == "Currently runing"
         end
@@ -90,9 +90,9 @@ describe "puppetd agent" do
             result[:data][:output].should == "Lock created"
         end
 
-        #Note, this test will not pass until the puppetd agent's 
+        #Note, this test will not pass until the puppetd agent's
         #disable method fails on a raised exception
-        it "should raise an exception if the file cannot be written" do 
+        it "should raise an exception if the file cannot be written" do
             File.expects(:exists?).returns(false)
             File.expects(:open).with("spec_test_lock_file", "w").raises("foo")
 

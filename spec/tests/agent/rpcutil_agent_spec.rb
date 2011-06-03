@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require File.join([File.dirname(__FILE__), '/../spec_helper'])
+require File.join([File.dirname(__FILE__), '/../../spec_helper'])
 
 describe "rpcutil agent" do
     before do
