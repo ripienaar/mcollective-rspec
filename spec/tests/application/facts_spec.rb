@@ -5,13 +5,8 @@ require File.join([File.dirname(__FILE__), '/../../spec_helper'])
 module MCollective
     describe "facts aplication" do
         before do
-            ARGV.clear
-
-            $: << "/home/rip/.mcollective.d/lib"
-            PluginManager.delete("facts_application")
-            PluginManager.loadclass("MCollective::Application::Facts")
-
-            @app = MCollective::Application::Facts.new
+            @util = MCTest::ApplicationTest.new("facts", :config => {:libdir => "/usr/libexec/mcollective"})
+            @app = @util.plugin
         end
 
         describe "#application_description" do
@@ -45,15 +40,11 @@ module MCollective
 
         describe "#show_single_fact_report" do
             it "should show a non verbose report by default" do
-                @app.stubs(:puts)
-                @app.stubs(:printf)
                 @app.expects(:puts).with(regexp_matches(/node1/)).never
                 @app.show_single_fact_report("foo", {"foo" => ["node1", "node2"]})
             end
 
             it "should support verbose reports" do
-                @app.stubs(:puts)
-                @app.stubs(:printf)
                 @app.expects(:puts).with(regexp_matches(/node1/)).once
                 @app.show_single_fact_report("foo", {"foo" => ["node1", "node2"]}, true)
             end

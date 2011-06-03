@@ -59,6 +59,15 @@ module MCTest
             connector
         end
 
+        def load_application(application)
+            classname = "MCollective::Application::#{application.capitalize}"
+            MCollective::PluginManager.delete("#{application}_application")
+            MCollective::PluginManager.loadclass(classname)
+
+            MCollective::PluginManager << {:type => "#{application}_application", :class => classname, :single_instance => false}
+            MCollective::PluginManager["#{application}_application"]
+        end
+
         def load_agent(agent)
             classname = "MCollective::Agent::#{agent.capitalize}"
             MCollective::PluginManager.delete("#{agent}_agent")
