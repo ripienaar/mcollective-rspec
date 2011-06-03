@@ -52,20 +52,16 @@ module MCollective
 
         describe "#main" do
             it "should handle failure responses correctly" do
-                #resp1 = {:senderid => "node1", :body => {:data => {:value => "1"}}}
-                #resp2 = {:senderid => "node2", :body => nil}
-                resp1 = @util.create_response("node1", "1")
-                resp2 = @util.create_response("node2", "99", true)
-
                 STDERR.expects(:puts).with("Could not parse facts for node2: NoMethodError: undefined method `[]' for nil:NilClass")
 
                 @app.expects(:configuration).returns({:fact => "test"}).twice
                 @app.expects(:options).returns({})
 
-                rpcutil = mock
-                rpcutil.expects(:progress=).once
-                rpcutil.expects(:get_fact).with(:fact => "test").multiple_yields([resp1], [resp2])
-                @app.expects(:rpcclient).with("rpcutil").returns(rpcutil)
+                rpcutil = @app.create_client("rpcutil") do |client|
+                    resp1 = @util.create_response("node1", :value => "1")
+                    resp2 = @util.create_response("node2", nil)
+                    client.expects(:get_fact).with(:fact => "test").multiple_yields([resp1], [resp2])
+                end
 
                 @app.expects(:show_single_fact_report).with("test", {"1" => ["node1"]}, nil)
                 @app.expects(:printrpcstats).once
@@ -74,8 +70,8 @@ module MCollective
             end
 
             it "should parse responses correctly" do
-                resp1 = {:senderid => "node1", :body => {:data => {:value => "1"}}}
-                resp2 = {:senderid => "node2", :body => {:data => {:value => "2"}}}
+                resp1 = @util.create_response("node1", :value => "1")
+                resp2 = @util.create_response("node2", :value => "2")
 
                 @app.expects(:configuration).returns({:fact => "test"}).twice
                 @app.expects(:options).returns({})

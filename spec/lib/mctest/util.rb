@@ -81,5 +81,9 @@ module MCTest
             MCollective::PluginManager << {:type => "#{agent}_agent", :class => classname, :single_instance => false}
             MCollective::PluginManager["#{agent}_agent"]
         end
+        
+        def create_response(senderid, data = {}, statuscode = 0, statusmsg = "OK")
+            {:senderid => senderid, :body =>{:data => data}}
+        end
     end
 end
