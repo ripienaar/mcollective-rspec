@@ -7,8 +7,8 @@ describe "service agent" do
         require 'puppet'
     end
 
-    before do 
-        @agent = MCTest::LocalAgentTest.new("service", :config => {:libdir => "/usr/libexec/mcollective"}).plugin
+    before do
+        @agent = MCollective::Test::LocalAgentTest.new("service", :config => {:libdir => "/usr/libexec/mcollective"}).plugin
     end
 
     describe "#meta" do
@@ -27,22 +27,22 @@ describe "service agent" do
             @puppet_type = mock
             @puppet_service = mock
             @puppet_provider = mock
-            
+
             MCollective::Log.configure(logger)
         end
 
         it "should succeed when action is not status and puppet version is not 0.24" do
             service = "service"
             action = "stop"
-            
+
             @agent.config.expects(:pluginconf).times(3).returns(@plugin)
 
             @plugin.expects(:include?).with("service.hasrestart").returns(true)
             @plugin.expects(:[]).with("service.hasrestart").returns("1")
             @plugin.expects(:include?).with("service.hasstatus").returns(false)
-            
+
             @puppet_service.expects(:provider).returns(@puppet_provider)
-            
+
             Puppet.expects(:version).returns("0.xx")
             Puppet::Type.expects(:type).with(:service).returns(@puppet_type)
 
@@ -52,85 +52,85 @@ describe "service agent" do
             @puppet_provider.expects(:status).returns(0)
 
             result = @agent.call("stop", :service => service)
-            result.should be_successful 
-            
+            result.should be_successful
+
         end
-        
+
         it "should succeed when action is status and puppet version is not 0.24" do
             service = "service"
             action = "status"
-            
+
             @agent.config.expects(:pluginconf).times(3).returns(@plugin)
 
             @plugin.expects(:include?).with("service.hasrestart").returns(true)
             @plugin.expects(:[]).with("service.hasrestart").returns("1")
             @plugin.expects(:include?).with("service.hasstatus").returns(false)
-            
+
             @puppet_service.expects(:provider).returns(@puppet_provider)
-            
+
             Puppet.expects(:version).returns("0.xx")
             Puppet::Type.expects(:type).with(:service).returns(@puppet_type)
 
             @puppet_type.expects(:new).with(:name => service, :hasstatus => false, :hasrestart => true).returns(@puppet_service)
-            
+
             @puppet_provider.expects(:status).returns(0)
 
             result = @agent.call("status", :service => service)
-            result.should be_successful 
-            
+            result.should be_successful
+
         end
-        
+
         it "should succeed when action is not status and puppet version is 0.24" do
             service = "service"
             action = "stop"
-            
+
             @agent.config.expects(:pluginconf).times(3).returns(@plugin)
 
             @plugin.expects(:include?).with("service.hasrestart").returns(true)
             @plugin.expects(:[]).with("service.hasrestart").returns("1")
             @plugin.expects(:include?).with("service.hasstatus").returns(false)
-            
+
             @puppet_service.expects(:provider).returns(@puppet_provider)
-            
+
             Puppet.expects(:version).returns("0.24")
 
             Puppet::Type.expects(:type).with(:service).twice.returns(@puppet_type)
 
             @puppet_type.expects(:clear)
             @puppet_type.expects(:create).with(:name => service, :hasstatus => false, :hasrestart => true).returns(@puppet_service)
-            
+
             @puppet_provider.expects(:send).with(action)
             @puppet_provider.expects(:status).returns(0)
 
             result = @agent.call("stop", :service => service)
-            result.should be_successful 
-            
+            result.should be_successful
+
         end
-        
+
         it "should succeed when action is status and puppet version is 0.24" do
             service = "service"
             action = "status"
-            
+
             @agent.config.expects(:pluginconf).times(3).returns(@plugin)
 
             @plugin.expects(:include?).with("service.hasrestart").returns(true)
             @plugin.expects(:[]).with("service.hasrestart").returns("1")
             @plugin.expects(:include?).with("service.hasstatus").returns(false)
-            
+
             @puppet_service.expects(:provider).returns(@puppet_provider)
-            
+
             Puppet.expects(:version).returns("0.24")
 
             Puppet::Type.expects(:type).with(:service).twice.returns(@puppet_type)
 
             @puppet_type.expects(:clear)
             @puppet_type.expects(:create).with(:name => service, :hasstatus => false, :hasrestart => true).returns(@puppet_service)
-            
+
             @puppet_provider.expects(:status).returns(0)
 
             result = @agent.call("status", :service => service)
-            result.should be_successful 
-            
+            result.should be_successful
+
         end
 
         it "should fail on exception raised" do

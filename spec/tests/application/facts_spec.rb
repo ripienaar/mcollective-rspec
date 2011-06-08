@@ -5,7 +5,7 @@ require File.join([File.dirname(__FILE__), '/../../spec_helper'])
 module MCollective
     describe "facts aplication" do
         before do
-            @util = MCTest::ApplicationTest.new("facts", :config => {:libdir => "/usr/libexec/mcollective"})
+            @util = MCollective::Test::ApplicationTest.new("facts", :config => {:libdir => "/usr/libexec/mcollective"})
             @app = @util.plugin
         end
 

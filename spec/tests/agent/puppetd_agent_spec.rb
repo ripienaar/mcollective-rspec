@@ -4,7 +4,7 @@ require File.join([File.dirname(__FILE__), '/../../spec_helper'])
 
 describe "puppetd agent" do
     before do
-        @agent = MCTest::LocalAgentTest.new("puppetd", :config => {:libdir => "/usr/libexec/mcollective"}).plugin
+        @agent = MCollective::Test::LocalAgentTest.new("puppetd", :config => {:libdir => "/usr/libexec/mcollective"}).plugin
         @agent.instance_variable_set("@lockfile", "spec_test_lock_file")
     end
 

@@ -4,7 +4,7 @@ require File.join([File.dirname(__FILE__), '/../../spec_helper'])
 
 describe "package agent" do
     before do
-        @agent = MCTest::LocalAgentTest.new("package", :config => {:libdir => "/usr/libexec/mcollective"}).plugin
+        @agent = MCollective::Test::LocalAgentTest.new("package", :config => {:libdir => "/usr/libexec/mcollective"}).plugin
     end
     describe "#yum_clean" do
         it "should fail if /usr/bin/yum doesn't exist" do
