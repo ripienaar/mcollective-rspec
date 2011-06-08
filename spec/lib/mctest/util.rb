@@ -70,11 +70,13 @@ module MCTest
 
         def load_agent(agent)
             classname = "MCollective::Agent::#{agent.capitalize}"
+
             MCollective::PluginManager.delete("#{agent}_agent")
             MCollective::PluginManager.loadclass(classname)
 
             # Stub out startup_hook as this feature should probably
             # be deprecated and it's really hard to test
+
             klass = MCollective::Agent.const_get(agent.capitalize)
             klass.any_instance.stubs(:startup_hook).returns(true)
 
