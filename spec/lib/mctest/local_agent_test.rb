@@ -33,7 +33,6 @@ module MCTest
                     request = {:action => action.to_s,
                                :agent => '#{@agent}',
                                :data => args}
-
                     handlemsg({:body => request}, @mocked_connector)
                 end
             "
