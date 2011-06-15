@@ -262,18 +262,11 @@ module MCollecitve
         end
 
         describe "#formatted_inventory" do
-            before(:all) do
-#                module FormatR
-#                    class Format
-#                    end
-#                end
-            end
-
             before do
                 @app.expects(:require).with('formatr')
             end
 
-            it "should raise and exception if no block is given" do
+            it "should raise an exception if no block is given" do
                 STDERR.expects(:puts).with("Could not create report: RuntimeError: Need to give a block to formatted_inventory")
                 expect{
                     @app.formatted_inventory
@@ -288,7 +281,7 @@ module MCollecitve
                 }.to raise_error "exit"
             end
 
-            it "should print and inventory" do
+            it "should print an inventory" do
                 body_mock = mock
                 rpcclient_mock = mock
 
@@ -317,6 +310,3 @@ module MCollecitve
 
     end
 end
-
-
-
