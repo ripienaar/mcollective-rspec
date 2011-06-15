@@ -4,7 +4,7 @@ require File.join([File.dirname(__FILE__), '/../../spec_helper'])
 
 module MCollective
 
-    describe "controller  application" do
+    describe "controller application" do
 
         before do
             @util = MCollective::Test::ApplicationTest.new("controller", :config => {:libdir => "/usr/libexec/mcollective"})
@@ -33,8 +33,22 @@ module MCollective
                 @app.validate_configuration(configuration)
             end
 
+            it "should validate that an argument has been set if the command is reload_agents" do
+                configuration = {:command => "reload_agents", :argument => "test"}
+                @app.validate_configuration(configuration)
+            end
+
+            it "should raise an exception if command is reload_agent and no argument has been set" do
+                configuration = {:command => "reload_agent"}
+                expect{
+                    @app.validate_configuration(configuration)
+                }.to raise_error "Please specify an agent name to reload with --argument"
+            end
+
             it "should raise and exception if command has not been set" do
-                lambda{@app.validate_configuration({})}.should raise_error
+                expect{
+                    @app.validate_configuration({})
+                }.to raise_error "Please specify a command and optional arguments"
             end
         end
 
